@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bollating Land</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+        
+        h1 img {
+            width: 325px; /* Adjust the width as needed */
+            height: 140px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #pdfButton {
+            display: none;
+        }
+
+        #result {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-30px);
+            }
+            60% {
+                transform: translateY(-15px);
+            }
+        }
+
+        .celebration {
+            color: #4CAF50;
+            font-size: 2em;
+            margin-top: 20px;
+            animation: bounce 1s;
+        }
+
+        .loading {
+            display: none;
+        }
+
+        .loading::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid #4CAF50;
+            border-radius: 50%;
+            border-top: 2px solid transparent;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1><img src="https://i.ibb.co/Hrp2sWZ/Pine-Enclave-Logo.png" alt="Pine-Enclave-Logo" border="0">
+    <h1>Balloting of Pine Enclave</h1>
+    <h2>3 & 5 Marla Plots</h2>
+
+    <button onclick="performLuckyDraw()">Start Bollating</button>
+    <span class="loading" id="loading"></span>
+    <button id="pdfButton" onclick="downloadPDF()">Download PDF</button>
+
+    <div id="result"></div>
+    <div class="celebration" id="celebration">🎉</div>
+
+    <script>
+        const candidates = [
+            "A-46", "A-47", "A-48", /* ... (400 names) ... */
+        ];
+
+        const plots = [
+            "Plot101", "Plot102", "Plot1033", /* ... (400 plot names) ... */
+        ];
+
+        function performLuckyDraw() {
+    document.getElementById('loading').style.display = 'inline-block';
+    document.getElementById('celebration').style.display = 'none';
+    document.getElementById('pdfButton').style.display = 'none';
+
+    setTimeout(() => {
+        const shuffledCandidates = shuffleArray(candidates);
+        const shuffledPlots = shuffleArray(plots);
+
+        let allocationResult = "<h2>Allocation Result:</h2>";
+        for (let i = 0; i < shuffledCandidates.length; i++) {
+            allocationResult += "<p>" + shuffledCandidates[i] + " gets " + shuffledPlots[i] + "</p>";
+        }
+
+        document.getElementById('result').innerHTML = allocationResult;
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('celebration').style.display = 'inline-block';
+        document.getElementById('pdfButton').style.display = 'inline-block';
+    }, 2000); // Simulating a delay for the lucky draw process
+}
+
+        function downloadPDF() {
+            const resultElement = document.getElementById('result');
+            
+            // Use html2pdf library to convert the result content to PDF
+            html2pdf(resultElement, {
+                margin: 10,
+                filename: 'allocation_result.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            });
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+    </script>
+</body>
+</html>
